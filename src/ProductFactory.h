@@ -3,15 +3,20 @@
 
 #include <map>
 #include <string>
-#include "FactoryProductBase.h"
 
-typedef std::map<std::string, FactoryProductBase*(*)()> map_type;
-
+template <typename TB>
 struct ProductFactory
 {
 public:
+	typedef std::map<std::string, TB*(*)()> map_type;
 	static map_type* productMap;
-	static FactoryProductBase* createInstance(std::string const& s)
+
+	ProductFactory()
+	{
+		getMap();
+	}
+
+	static TB* createInstance(std::string const& s)
 	{
 		map_type::iterator it = getMap()->find(s);
 		if (it == getMap()->end())
@@ -31,6 +36,6 @@ protected:
 	}
 };
 
-map_type* ProductFactory::productMap = NULL;
+ProductFactory<TB>::map_type* productMap;
 
 #endif /* PRODUCTFACTORY_H_ */

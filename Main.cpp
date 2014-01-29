@@ -1,44 +1,59 @@
 #include <iostream>
-#include "src/FactoryProductBase.h"
 #include "src/ProductFactory.h"
 #include "src/FactoryRegister.h"
 
-class TestProduct1: public FactoryProductBase
+/*******************************************************************/
+/* The Base Class with virtual Interface for your factory products */
+class AnimalBase {
+public:
+	AnimalBase(){};
+	virtual ~AnimalBase(){};
+	virtual bool speak(){
+		std::cout << "Speak not overloaded for animal." << std::endl;
+		return true;
+	}
+};
+
+/*******************************************************************/
+/* An example product class that self registers */
+class Duck: public AnimalBase
 {
 public:
-	TestProduct1(){};
-	~TestProduct1(){};
-	bool produce()
+	Duck(){};
+	~Duck(){};
+	bool speak()
 	{
-		std::cout << "P1" << std::endl;
+		std::cout << "Quack" << std::endl;
 		return true;
 	}
 private:
-	static FactoryRegister<TestProduct1> reg;
+	static FactoryRegister<Duck, AnimalBase> reg;
 };
-FactoryRegister<TestProduct1> TestProduct1::reg("TestProduct1");
+FactoryRegister<Duck, AnimalBase> Duck::reg("Duck");
 
-class TestProduct2: public FactoryProductBase
+/*******************************************************************/
+/* Another example product class that self registers. */
+class Dog: public AnimalBase
 {
 public:
-	TestProduct2(){};
-	~TestProduct2(){};
-	bool produce()
+	Dog(){};
+	~Dog(){};
+	bool speak()
 	{
-		std::cout << "P2" << std::endl;
+		std::cout << "Bark" << std::endl;
 		return true;
 	}
 private:
-	static FactoryRegister<TestProduct2> reg;
+	static FactoryRegister<Dog, AnimalBase> reg;
 };
-FactoryRegister<TestProduct2> TestProduct2::reg("TestProduct2");
+FactoryRegister<Dog, AnimalBase> Dog::reg("Dog");
 
-
+/*******************************************************************/
+/* How to produce and use products from a factory using the registered string */
 int main (int argc, char* argv[])
 {
-
-	FactoryProductBase* product = ProductFactory::createInstance("TestProduct2");
-	product->produce();
+	AnimalBase* animal = ProductFactory<AnimalBase>::createInstance("Duck");
+	animal->speak();
 	return 0;
 }
 

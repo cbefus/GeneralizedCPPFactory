@@ -4,16 +4,15 @@
 #include <string>
 #include <utility>
 #include "ProductFactory.h"
-#include "FactoryProductBase.h"
 
-template<typename T> FactoryProductBase * createT() { return new T; }
+template<typename T, typename TB> TB * createT() { return new T; }
 
-template<typename T>
-struct FactoryRegister : ProductFactory
+template<typename T, typename TB>
+struct FactoryRegister : ProductFactory<TB>
 {
     FactoryRegister(std::string const& s)
     {
-        getMap()->insert(std::make_pair<std::string, FactoryProductBase*(*)()>(s, &createT<T>));
+        getMap()->insert(std::make_pair<std::string, TB*(*)()>(s, &createT<T, TB>));
     }
 };
 
